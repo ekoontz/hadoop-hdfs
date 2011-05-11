@@ -59,7 +59,7 @@ class NamenodeJspHelper {
   static String getSafeModeText(FSNamesystem fsn) {
     if (!fsn.isInSafeMode())
       return "";
-    return "Safe mode is ON. <em>" + fsn.getSafeModeTip() + "</em><br>";
+    return "<div>Safe mode is ON. <em>" + fsn.getSafeModeTip() + "</em></div>";
   }
   
   /**
@@ -68,9 +68,9 @@ class NamenodeJspHelper {
    */
   static String getSecurityModeText() {  
     if(UserGroupInformation.isSecurityEnabled()) {
-      return "Security is <em>ON</em> <br>";
+      return "<div>Security is <em>ON</em>.</div>";
     } else {
-      return "Security is <em>OFF</em> <br>";
+      return "<div>Security is <em>OFF</em>.</div>";
     }
   }
 
@@ -93,22 +93,23 @@ class NamenodeJspHelper {
     long used = (totalMemory * 100) / commitedMemory;
     long usedNonHeap = (totalNonHeap * 100) / commitedNonHeap;
 
-    String str = inodes + " files and directories, " + blocks + " blocks = "
+    String str = "<div>" + inodes + " files and directories, " + blocks + " blocks = "
         + (inodes + blocks) + " total";
     if (maxobjects != 0) {
       long pct = ((inodes + blocks) * 100) / maxobjects;
       str += " / " + maxobjects + " (" + pct + "%)";
     }
-    str += ".<br>";
-    str += "Heap Memory used " + StringUtils.byteDesc(totalMemory) + " is "
+    str += ".</div>";
+    str += "<div>Heap Memory used " + StringUtils.byteDesc(totalMemory) + " is "
         + " " + used + "% of Commited Heap Memory " 
         + StringUtils.byteDesc(commitedMemory)
-        + ". Max Heap Memory is " + StringUtils.byteDesc(maxMemory) +
-        ". <br>";
-    str += "Non Heap Memory used " + StringUtils.byteDesc(totalNonHeap) + " is"
+        + ".</div>"
+        + "<div>Max Heap Memory is " + StringUtils.byteDesc(maxMemory) +
+        ". </div>";
+    str += "<div>Non Heap Memory used " + StringUtils.byteDesc(totalNonHeap) + " is"
         + " " + usedNonHeap + "% of " + " Commited Non Heap Memory "
-        + StringUtils.byteDesc(commitedNonHeap) + ". Max Non Heap Memory is "
-        + StringUtils.byteDesc(maxNonHeap) + ".<br>";
+        + StringUtils.byteDesc(commitedNonHeap) + ".</div><div>Max Non Heap Memory is "
+        + StringUtils.byteDesc(maxNonHeap) + ".</div>";
     return str;
   }
 
@@ -127,17 +128,17 @@ class NamenodeJspHelper {
 
   /** Return a table containing version information. */
   static String getVersionTable(FSNamesystem fsn) {
-    return "<div id='dfstable'><table>"
-        + "\n  <tr><td id='col1'>Started:</td><td>" + fsn.getStartTime()
-        + "</td></tr>\n" + "\n  <tr><td id='col1'>Version:</td><td>"
+    return "<div class='dfstable'><table>"
+        + "\n  <tr><th>Started:</th><td>" + fsn.getStartTime()
+        + "</td></tr>\n" + "\n  <tr><th>Version:</td><td>"
         + VersionInfo.getVersion() + ", " + VersionInfo.getRevision()
-        + "\n  <tr><td id='col1'>Compiled:</td><td>" + VersionInfo.getDate()
+        + "\n  <tr><th>Compiled:</th><td>" + VersionInfo.getDate()
         + " by " + VersionInfo.getUser() + " from " + VersionInfo.getBranch()
-        + "\n  <tr><td id='col1'>Upgrades:</td><td>"
+        + "\n  <tr><th>Upgrades:</th><td>"
         + getUpgradeStatusText(fsn) 
-        + "\n  <tr><td id='col1'>Cluster ID:</td><td>" + fsn.getClusterId()
+        + "\n  <tr><th>Cluster ID:</th><td>" + fsn.getClusterId()
         + "</td></tr>\n" 
-        + "\n  <tr><td id='col1'>Block Pool ID:</td><td>" + fsn.getBlockPoolId()
+        + "\n  <tr><th>Block Pool ID:</th><td>" + fsn.getBlockPoolId()
         + "</td></tr>\n" 
         + "\n</table></div>";
   }
@@ -146,8 +147,10 @@ class NamenodeJspHelper {
     // Ideally this should be displayed in RED
     long missingBlocks = fsn.getMissingBlocksCount();
     if (missingBlocks > 0) {
-      return "<br> WARNING :" + " There are " + missingBlocks
-          + " missing blocks. Please check the log or run fsck. <br><br>";
+      return "<div class='warning'>"
+           + "<a class='warning' href='/corrupt_files.jsp' title='List corrupt files'>"
+           +  "WARNING :" + " There are " + missingBlocks
+           + " missing blocks. Please check the log or run fsck.</a></div>";
     }
     return "";
   }
@@ -185,9 +188,9 @@ class NamenodeJspHelper {
         = fsImage.getStorage().getRemovedStorageDirs();
 
       // FS Image storage configuration
-      out.print("<h3> " + nn.getRole() + " Storage: </h3>");
-      out.print("<div id=\"dfstable\"> <table border=1 cellpadding=10 cellspacing=0 title=\"NameNode Storage\">\n"
-              + "<thead><tr><td><b>Storage Directory</b></td><td><b>Type</b></td><td><b>State</b></td></tr></thead>");
+      out.print("<h4> " + nn.getRole() + " Storage: </h4>");
+      out.print("<div class=\"dfstable\"> <table border=1 cellpadding=10 cellspacing=0 title=\"NameNode Storage\">\n"
+              + "<thead><tr><th>Storage Directory</th><th>Type</th><th>State</th></tr></thead>");
 
       StorageDirectory st = null;
       for (Iterator<StorageDirectory> it 
@@ -204,11 +207,12 @@ class NamenodeJspHelper {
         st = removedStorageDirs.get(i);
         String dir = "" + st.getRoot();
         String type = "" + st.getStorageDirType();
-        out.print("<tr><td>" + dir + "</td><td>" + type
-            + "</td><td><font color=red>Failed</font></td></tr>");
+        out.print("<tr><th>" + dir + "</th><td>" + type
+            + "</td><td><span class='failed'>Failed</span></td></tr>");
       }
 
-      out.print("</table></div><br>\n");
+      out.print("</table></div>");
+
     }
 
     void generateHealthReport(JspWriter out, NameNode nn,
@@ -297,7 +301,7 @@ class NamenodeJspHelper {
       long bpUsed = fsnStats[6];
       float percentBpUsed = DFSUtil.getPercentUsed(bpUsed, total);
       
-      out.print("<div id=\"dfstable\"> <table>\n" + rowTxt() + colTxt()
+      out.print("<div class=\"dfstable\"> <table>\n" + rowTxt() + colTxt()
           + "Configured Capacity" + colTxt() + ":" + colTxt()
           + StringUtils.byteDesc(total) + rowTxt() + colTxt() + "DFS Used"
           + colTxt() + ":" + colTxt() + StringUtils.byteDesc(used) + rowTxt()
@@ -338,7 +342,7 @@ class NamenodeJspHelper {
           + "</table></div><br>\n");
 
       if (live.isEmpty() && dead.isEmpty()) {
-        out.print("There are no datanodes in the cluster");
+        out.print("There are no datanodes in the cluster.");
       }
     }
   }

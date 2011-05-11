@@ -34,29 +34,41 @@
 %>
 
 <html>
-
-<link rel="stylesheet" type="text/css" href="/static/hadoop.css">
-<title>Hadoop <%=namenodeRole%> <%=namenodeLabel%></title>
-    
+<head>
+        <link rel="stylesheet" type="text/css" href="/static/hadoop.css">
+        <title>Hadoop <%=namenodeRole%> <%=namenodeLabel%></title>
+</head>
 <body>
-<h1><%=namenodeRole%> '<%=namenodeLabel%>'</h1>
-<%= NamenodeJspHelper.getVersionTable(fsn) %>
-<br />
-<b><a href="/nn_browsedfscontent.jsp">Browse the filesystem</a></b><br>
-<b><a href="/logs/"><%=namenodeRole%> Logs</a></b>
+  <h1><%=namenodeRole%> '<%=namenodeLabel%>'</h1>
+  <div class="report">
+    <h3>Namenode Summary</h3>
+    <%= NamenodeJspHelper.getVersionTable(fsn) %>
 
-<hr>
-<h3>Cluster Summary</h3>
-<b> <%= NamenodeJspHelper.getSecurityModeText()%> </b>
-<b> <%= NamenodeJspHelper.getSafeModeText(fsn)%> </b>
-<b> <%= NamenodeJspHelper.getInodeLimitText(fsn)%> </b>
-<a class="warning" href="/corrupt_files.jsp" title="List corrupt files">
-  <%= NamenodeJspHelper.getWarningText(fsn)%>
-</a>
+    <ul>
+      <li><a href="/nn_browsedfscontent.jsp">Browse the filesystem</a></li>
+      <li><a href="/logs/"><%=namenodeRole%> Logs</a></li>
+    </ul>
+  </div>
 
-<% healthjsp.generateHealthReport(out, nn, request); %>
-<hr>
-<% healthjsp.generateConfReport(out, nn, request); %>
+  <div class="report">
+    <h3>Cluster Summary</h3>
+    <div class="clustersummary">
+     <%= NamenodeJspHelper.getSecurityModeText()%>
+     <%= NamenodeJspHelper.getSafeModeText(fsn)%>
+     <%= NamenodeJspHelper.getInodeLimitText(fsn)%>
+     <%= NamenodeJspHelper.getWarningText(fsn)%>
+    </div>
+  </div>
+  <div class="report">
+    <h3>Health</h3>
+    <% healthjsp.generateHealthReport(out, nn, request); %>
+  </div>
+
+  <div class="report">
+    <h3>Configuration</h3>
+    <% healthjsp.generateConfReport(out, nn, request); %>
+  </div>
+
 <%
 out.println(ServletUtil.htmlFooter());
 %>

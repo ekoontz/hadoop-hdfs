@@ -432,9 +432,9 @@ public class JspHelper {
 
   /** Return a table containing version information. */
   public static String getVersionTable() {
-    return "<div id='dfstable'><table>"       
-        + "\n  <tr><td id='col1'>Version:</td><td>" + VersionInfo.getVersion() + ", " + VersionInfo.getRevision()
-        + "\n  <tr><td id='col1'>Compiled:</td><td>" + VersionInfo.getDate() + " by " + VersionInfo.getUser() + " from " + VersionInfo.getBranch()
+    return "<div class='dfstable'><table>"
+        + "\n  <tr><th>Version:</th><td>" + VersionInfo.getVersion() + ", " + VersionInfo.getRevision()
+        + "\n  <tr><th>Compiled:</th><td>" + VersionInfo.getDate() + " by " + VersionInfo.getUser() + " from " + VersionInfo.getBranch()
         + "\n</table></div>";
   }
 

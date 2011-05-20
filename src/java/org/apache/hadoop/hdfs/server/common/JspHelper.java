@@ -433,8 +433,8 @@ public class JspHelper {
   /** Return a table containing version information. */
   public static String getVersionTable() {
     return "<div class='dfstable'><table>"
-        + "\n  <tr><th>Version:</th><td>" + VersionInfo.getVersion() + ", " + VersionInfo.getRevision()
-        + "\n  <tr><th>Compiled:</th><td>" + VersionInfo.getDate() + " by " + VersionInfo.getUser() + " from " + VersionInfo.getBranch()
+        + "\n  <tr><th>Version:</th><td>" + VersionInfo.getVersion() + ", " + VersionInfo.getRevision()  + "</tr>"
+        + "\n  <tr><th>Compiled:</th><td>" + VersionInfo.getDate() + " by " + VersionInfo.getUser() + " from " + VersionInfo.getBranch() + "</tr>"
         + "\n</table></div>";
   }
 

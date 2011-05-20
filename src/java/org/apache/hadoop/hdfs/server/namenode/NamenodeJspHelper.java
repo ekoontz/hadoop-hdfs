@@ -129,18 +129,22 @@ class NamenodeJspHelper {
   /** Return a table containing version information. */
   static String getVersionTable(FSNamesystem fsn) {
     return "<div class='dfstable'><table>"
-        + "\n  <tr><th>Started:</th><td>" + fsn.getStartTime()
-        + "</td></tr>\n" + "\n  <tr><th>Version:</td><td>"
-        + VersionInfo.getVersion() + ", " + VersionInfo.getRevision()
-        + "\n  <tr><th>Compiled:</th><td>" + VersionInfo.getDate()
-        + " by " + VersionInfo.getUser() + " from " + VersionInfo.getBranch()
-        + "\n  <tr><th>Upgrades:</th><td>"
-        + getUpgradeStatusText(fsn) 
-        + "\n  <tr><th>Cluster ID:</th><td>" + fsn.getClusterId()
-        + "</td></tr>\n" 
-        + "\n  <tr><th>Block Pool ID:</th><td>" + fsn.getBlockPoolId()
-        + "</td></tr>\n" 
-        + "\n</table></div>";
+        + "\n  <tr><th>Started</th><td>" + fsn.getStartTime() + "</td></tr>"
+        + "\n  <tr><th>Version</th>"
+        + "\n      <td>" + VersionInfo.getVersion() + ", " + VersionInfo.getRevision() + "</td>"
+        + "\n  </tr>"
+        + "\n  <tr><th>Compiled</th>"
+        + "\n      <td>" + VersionInfo.getDate() + " by " + VersionInfo.getUser() + " from " + VersionInfo.getBranch() + "</td>"
+        + "\n  </tr>"
+        + "\n  <tr><th>Upgrades</th>"
+        + "\n      <td>" + getUpgradeStatusText(fsn)  + "</td>"
+        + "\n  </tr>"
+        + "\n  <tr><th>Cluster ID</th>"
+        + "\n      <td>" + fsn.getClusterId() + "</td>"
+        + "\n </tr>"
+        + "\n  <tr><th>Block Pool ID</th>"
+        + "\n      <td>" + fsn.getBlockPoolId() + "</td>"
+        + "\n </tr></table></div>";
   }
 
   static String getWarningText(FSNamesystem fsn) {
@@ -148,7 +152,7 @@ class NamenodeJspHelper {
     long missingBlocks = fsn.getMissingBlocksCount();
     if (missingBlocks > 0) {
       return "<div class='warning'>"
-           + "<a class='warning' href='/corrupt_files.jsp' title='List corrupt files'>"
+           + "<a href='/corrupt_files.jsp' title='List corrupt files'>"
            +  "WARNING :" + " There are " + missingBlocks
            + " missing blocks. Please check the log or run fsck.</a></div>";
     }
@@ -189,7 +193,7 @@ class NamenodeJspHelper {
 
       // FS Image storage configuration
       out.print("<h4> " + nn.getRole() + " Storage: </h4>");
-      out.print("<div class=\"dfstable\"> <table border=1 cellpadding=10 cellspacing=0 title=\"NameNode Storage\">\n"
+      out.print("<div class=\"dfstable\"> <table title=\"NameNode Storage\">\n"
               + "<thead><tr><th>Storage Directory</th><th>Type</th><th>State</th></tr></thead>");
 
       StorageDirectory st = null;
@@ -301,45 +305,38 @@ class NamenodeJspHelper {
       long bpUsed = fsnStats[6];
       float percentBpUsed = DFSUtil.getPercentUsed(bpUsed, total);
       
-      out.print("<div class=\"dfstable\"> <table>\n" + rowTxt() + colTxt()
-          + "Configured Capacity" + colTxt() + ":" + colTxt()
-          + StringUtils.byteDesc(total) + rowTxt() + colTxt() + "DFS Used"
-          + colTxt() + ":" + colTxt() + StringUtils.byteDesc(used) + rowTxt()
-          + colTxt() + "Non DFS Used" + colTxt() + ":" + colTxt()
-          + StringUtils.byteDesc(nonDFS) + rowTxt() + colTxt()
-          + "DFS Remaining" + colTxt() + ":" + colTxt()
-          + StringUtils.byteDesc(remaining) + rowTxt() + colTxt() + "DFS Used%"
-          + colTxt() + ":" + colTxt()
-          + StringUtils.limitDecimalTo2(percentUsed) + " %" + rowTxt()
-          + colTxt() + "DFS Remaining%" + colTxt() + ":" + colTxt()
-          + StringUtils.limitDecimalTo2(percentRemaining) + " %"
-          + rowTxt() + colTxt() + "Block Pool Used" + colTxt() + ":" + colTxt()
-          + StringUtils.byteDesc(bpUsed) + rowTxt()
-          + colTxt() + "Block Pool Used%"+ colTxt() + ":" + colTxt()
-          + StringUtils.limitDecimalTo2(percentBpUsed) + " %" 
-          + rowTxt() + colTxt() + "DataNodes usages" + colTxt() + ":" + colTxt()
-          + "Min %" + colTxt() + "Median %" + colTxt() + "Max %" + colTxt()
-          + "stdev %" + rowTxt() + colTxt() + colTxt() + colTxt()
-          + StringUtils.limitDecimalTo2(min) + " %"
-          + colTxt() + StringUtils.limitDecimalTo2(median) + " %"
-          + colTxt() + StringUtils.limitDecimalTo2(max) + " %"
-          + colTxt() + StringUtils.limitDecimalTo2(dev) + " %"
-          + rowTxt() + colTxt()
-          + "<a href=\"dfsnodelist.jsp?whatNodes=LIVE\">Live Nodes</a> "
-          + colTxt() + ":" + colTxt() + live.size()
-          + " (Decommissioned: " + liveDecommissioned + ")"
-          + rowTxt() + colTxt()
-          + "<a href=\"dfsnodelist.jsp?whatNodes=DEAD\">Dead Nodes</a> "
-          + colTxt() + ":" + colTxt() + dead.size() 
-          + " (Decommissioned: " + deadDecommissioned + ")"
-          + rowTxt() + colTxt()
-          + "<a href=\"dfsnodelist.jsp?whatNodes=DECOMMISSIONING\">"
-          + "Decommissioning Nodes</a> "
-          + colTxt() + ":" + colTxt() + decommissioning.size() 
-          + rowTxt() + colTxt("Excludes missing blocks.")
-          + "Number of Under-Replicated Blocks" + colTxt() + ":" + colTxt()
-          + fsn.getUnderReplicatedNotMissingBlocks()
-          + "</table></div><br>\n");
+      out.print("<div class=\"dfstable stats\"> <table>"
+          + "\n<tr><th>Configured Capacity</th>"
+          + "\n    <td>" + StringUtils.byteDesc(total) + "</td></tr>"
+          + "\n<tr><th>DFS Used</th>"
+          + "\n    <td>" + StringUtils.byteDesc(used) + "</td></tr>"
+          + "\n<tr><th>Non DFS Used</th>"
+          + "\n    <td>" + StringUtils.byteDesc(nonDFS) + "</td></tr>"
+          + "\n<tr><th>DFS Remaining</th>"
+          + "\n    <td>" + StringUtils.byteDesc(remaining) + "</td></tr>"
+          + "\n<tr><th>DFS Used %</th>"
+          + "\n    <td>" + StringUtils.limitDecimalTo2(percentUsed) + " %</td></tr>"
+          + "\n<tr><th>DFS Remaining %</th>"
+          + "\n    <td>" + StringUtils.limitDecimalTo2(percentRemaining) + " %</td></tr>"
+          + "\n<tr><th>Block Pool Used</th>"
+          + "\n    <td>" + StringUtils.byteDesc(bpUsed) + rowTxt() + "</td></tr>"
+          + "\n<tr><th>Block Pool Used %</th>"
+          + "\n    <td>"+ StringUtils.limitDecimalTo2(percentBpUsed) + " %</td></tr>"
+          + "\n<tr><th>DataNodes usages</th></tr>"
+          + "\n<tr><th>Min %</th><th>" + "Median %" + "</th><th>" + "Max %" + "</th><th>" + "Std Dev %" + "</th></tr>"
+          + "\n<tr><td>" + StringUtils.limitDecimalTo2(min) +    " %</td>"
+          + "\n         <td>" + StringUtils.limitDecimalTo2(median) + " %</td>"
+          + "\n         <td>" + StringUtils.limitDecimalTo2(max) +    " %</td>"
+          + "\n         <td>" + StringUtils.limitDecimalTo2(dev) +    " %</td></tr>"
+          + "\n<tr><th><a href=\"dfsnodelist.jsp?whatNodes=LIVE\">Live Nodes</a></th>"
+          + "\n    <td>" + live.size() + " (Decommissioned: " + liveDecommissioned + ")</td></tr>"
+          + "\n<tr><th><a href=\"dfsnodelist.jsp?whatNodes=DEAD\">Dead Nodes</a></th>"
+          + "\n    <td>" + dead.size() + " (Decommissioned: " + deadDecommissioned + ")</td></tr>"
+          + "\n    <th><a href=\"dfsnodelist.jsp?whatNodes=DECOMMISSIONING\">Decommissioning Nodes</a></th>"
+          + "\n    <td>" + decommissioning.size() + "</td></tr>"
+          + "\n<tr><th>Under-Replicated Blocks<br/> (Excluding missing blocks)</th>"
+          + "\n    <td>" + fsn.getUnderReplicatedNotMissingBlocks() + "</td></tr>"
+          + "\n</table></div>\n");
 
       if (live.isEmpty() && dead.isEmpty()) {
         out.print("There are no datanodes in the cluster.");

@@ -30,7 +30,7 @@ div#dfsnodetable tr#row1, div.dfstable td.col1 {
 
 div.dfstable th {
     text-align:left;
-	vertical-align : top;
+	vertical-align:top;
 }
 
 div.dfstable td#col3 { /* apparently not used ever. */
@@ -84,6 +84,21 @@ div#dfsnodetable .rowAlt, .headerASC, .headerDSC {
 
 div.dfstable table {
 	white-space : pre;
+    border-collapse: collapse;
+}
+
+div.dfstable th {
+    padding:10px;
+}
+
+div.dfstable td {
+    border:1px solid black;
+    padding:10px;
+}
+
+/* align 'stats' tables right since these are numerical values to make them easy to visually compare with one another. */
+div.stats td {
+    text-align:right; 
 }
 
 div#dfsnodetable td, div#dfsnodetable th, div.dfstable td {
@@ -143,6 +158,7 @@ div.report {
 div.report div {
     margin-top:0.25em;
     margin-bottom:0.25em;
+    margin-left:0.25em;
 }
 
 div.report h3 {
@@ -155,7 +171,7 @@ div.report h3 {
 }
 
 div.report table {
-    margin:3px;
+    margin:0.25em;
 }
 
 span.failed {

@@ -277,30 +277,6 @@ class NamenodeJspHelper {
       nonDFS = nonDFS < 0 ? 0 : nonDFS;
       float percentUsed = DFSUtil.getPercentUsed(used, total);
       float percentRemaining = DFSUtil.getPercentRemaining(used, total);
-      float median = 0;
-      float max = 0;
-      float min = 0;
-      float dev = 0;
-      
-      if (live.size() > 0) {
-        float totalDfsUsed = 0;
-        float[] usages = new float[live.size()];
-        int i = 0;
-        for (DatanodeDescriptor dn : live) {
-          usages[i++] = dn.getDfsUsedPercent();
-          totalDfsUsed += dn.getDfsUsedPercent();
-        }
-        totalDfsUsed /= live.size();
-        Arrays.sort(usages);
-        median = usages[usages.length/2];
-        max = usages[usages.length - 1];
-        min = usages[0];
-        
-        for (i = 0; i < usages.length; i++) {
-          dev += (usages[i] - totalDfsUsed) * (usages[i] - totalDfsUsed);
-        }
-        dev = (float) Math.sqrt(dev/usages.length);
-      }
 
       long bpUsed = fsnStats[6];
       float percentBpUsed = DFSUtil.getPercentUsed(bpUsed, total);
@@ -322,12 +298,65 @@ class NamenodeJspHelper {
           + "\n    <td>" + StringUtils.byteDesc(bpUsed) + rowTxt() + "</td></tr>"
           + "\n<tr><th>Block Pool Used %</th>"
           + "\n    <td>"+ StringUtils.limitDecimalTo2(percentBpUsed) + " %</td></tr>"
-          + "\n<tr><th>DataNodes usages</th></tr>"
-          + "\n<tr><th>Min %</th><th>" + "Median %" + "</th><th>" + "Max %" + "</th><th>" + "Std Dev %" + "</th></tr>"
-          + "\n<tr><td>" + StringUtils.limitDecimalTo2(min) +    " %</td>"
-          + "\n         <td>" + StringUtils.limitDecimalTo2(median) + " %</td>"
-          + "\n         <td>" + StringUtils.limitDecimalTo2(max) +    " %</td>"
-          + "\n         <td>" + StringUtils.limitDecimalTo2(dev) +    " %</td></tr>"
+          + "\n</table></div>\n");
+    }
+
+    void generateUsageReport(JspWriter out, NameNode nn,
+        HttpServletRequest request) throws IOException {
+
+        float median = 0;
+        float max = 0;
+        float min = 0;
+        float dev = 0;
+
+        ArrayList<DatanodeDescriptor> live = new ArrayList<DatanodeDescriptor>();
+        ArrayList<DatanodeDescriptor> dead = new ArrayList<DatanodeDescriptor>();
+        FSNamesystem fsn = nn.getNamesystem();
+        fsn.DFSNodesStatus(live, dead);
+
+        // If a data node has been first included in the include list,
+        // then decommissioned, then removed from both include and exclude list.
+        // We make the web console to "forget" this node by not displaying it.
+        fsn.removeDecomNodeFromList(live);
+        fsn.removeDecomNodeFromList(dead);
+
+        int liveDecommissioned = 0;
+        for (DatanodeDescriptor d : live) {
+          liveDecommissioned += d.isDecommissioned() ? 1 : 0;
+        }
+
+        int deadDecommissioned = 0;
+        for (DatanodeDescriptor d : dead) {
+          deadDecommissioned += d.isDecommissioned() ? 1 : 0;
+        }
+
+        ArrayList<DatanodeDescriptor> decommissioning = fsn.getDecommissioningNodes();
+
+        if (live.size() > 0) {
+          float totalDfsUsed = 0;
+          float[] usages = new float[live.size()];
+          int i = 0;
+          for (DatanodeDescriptor dn : live) {
+            usages[i++] = dn.getDfsUsedPercent();
+            totalDfsUsed += dn.getDfsUsedPercent();
+          }
+          totalDfsUsed /= live.size();
+          Arrays.sort(usages);
+          median = usages[usages.length/2];
+          max = usages[usages.length - 1];
+          min = usages[0];
+
+          for (i = 0; i < usages.length; i++) {
+            dev += (usages[i] - totalDfsUsed) * (usages[i] - totalDfsUsed);
+          }
+          dev = (float) Math.sqrt(dev/usages.length);
+        }
+
+        out.print("<div class=\"dfstable stats\"> <table>"
+          + "\n<tr><th>Min %</th><td>" + StringUtils.limitDecimalTo2(min) + "</td></tr>"
+          + "\n<tr><th>Median %</th><td>" + StringUtils.limitDecimalTo2(median) + "</td></tr>"
+          + "\n<tr><th>Max %" + "</th><td>" + StringUtils.limitDecimalTo2(max) + "</td></tr>"
+          + "\n<tr><th>Std Dev %" + "</th><td>" + StringUtils.limitDecimalTo2(dev) + "</td></tr>"
           + "\n<tr><th><a href=\"dfsnodelist.jsp?whatNodes=LIVE\">Live Nodes</a></th>"
           + "\n    <td>" + live.size() + " (Decommissioned: " + liveDecommissioned + ")</td></tr>"
           + "\n<tr><th><a href=\"dfsnodelist.jsp?whatNodes=DEAD\">Dead Nodes</a></th>"

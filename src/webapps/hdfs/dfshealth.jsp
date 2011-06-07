@@ -65,6 +65,12 @@
   </div>
 
   <div class="report">
+    <h3>Usage</h3>
+    <% healthjsp.generateUsageReport(out, nn, request); %>
+  </div>
+
+
+  <div class="report">
     <h3>Configuration</h3>
     <% healthjsp.generateConfReport(out, nn, request); %>
   </div>

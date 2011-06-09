@@ -82,19 +82,6 @@ class NamenodeJspHelper {
     long maxobjects = fsn.getMaxObjects();
 
     MemoryMXBean mem = ManagementFactory.getMemoryMXBean();
-    MemoryUsage heap = mem.getHeapMemoryUsage();
-    long totalMemory = heap.getUsed();
-    long maxMemory = heap.getMax();
-    long commitedMemory = heap.getCommitted();
-    
-    MemoryUsage nonHeap = mem.getNonHeapMemoryUsage();
-    long totalNonHeap = nonHeap.getUsed();
-    long maxNonHeap = nonHeap.getMax();
-    long commitedNonHeap = nonHeap.getCommitted();
-
-    long used = (totalMemory * 100) / commitedMemory;
-    long usedNonHeap = (totalNonHeap * 100) / commitedNonHeap;
-
     String str = "<div>" + inodes + " files and directories, " + blocks + " blocks = "
         + (inodes + blocks) + " total";
     if (maxobjects != 0) {
@@ -102,15 +89,32 @@ class NamenodeJspHelper {
       str += " / " + maxobjects + " (" + pct + "%)";
     }
     str += ".</div>";
+
+    // heap report.
+    MemoryUsage heap = mem.getHeapMemoryUsage();
+    long maxMemory = heap.getMax();
+    long committedMemory = heap.getCommitted();
+    long totalMemory = heap.getUsed();
+    long used = (totalMemory * 100) / committedMemory;
+
     str += "<div>Heap Memory used " + StringUtils.byteDesc(totalMemory) + " is "
-        + " " + used + "% of Commited Heap Memory " 
-        + StringUtils.byteDesc(commitedMemory)
+        + " " + used + "% of Committed Heap Memory "
+        + StringUtils.byteDesc(committedMemory)
         + ".</div>"
         + "<div>Max Heap Memory is " + StringUtils.byteDesc(maxMemory) +
         ". </div>";
+
+
+    // non-heap report.
+    MemoryUsage nonHeap = mem.getNonHeapMemoryUsage();
+    long totalNonHeap = nonHeap.getUsed();
+    long maxNonHeap = nonHeap.getMax();
+    long committedNonHeap = nonHeap.getCommitted();
+    long usedNonHeap = (totalNonHeap * 100) / committedNonHeap;
+
     str += "<div>Non Heap Memory used " + StringUtils.byteDesc(totalNonHeap) + " is"
-        + " " + usedNonHeap + "% of " + " Commited Non Heap Memory "
-        + StringUtils.byteDesc(commitedNonHeap) + ".</div><div>Max Non Heap Memory is "
+        + " " + usedNonHeap + "% of " + " Committed Non Heap Memory "
+        + StringUtils.byteDesc(committedNonHeap) + ".</div><div>Max Non Heap Memory is "
         + StringUtils.byteDesc(maxNonHeap) + ".</div>";
     return str;
   }

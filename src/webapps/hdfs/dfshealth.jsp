@@ -64,8 +64,16 @@
           <td> <%= NamenodeJspHelper.getSafeModeText(fsn) %> </td>
         </tr>
         <tr>
-          <th>Capacity</th>
-          <td> <%= NamenodeJspHelper.getInodeLimitText(fsn)%> </td>
+          <th>Inode Usage</th>
+          <td> <%= NamenodeJspHelper.getInodeUsage(fsn)%> </td>
+        </tr>
+        <tr>
+          <th>Heap Usage</th>
+          <td> <%= NamenodeJspHelper.getHeapUsage(fsn)%> </td>
+        </tr>
+        <tr>
+          <th>NonHeap Usage</th>
+          <td> <%= NamenodeJspHelper.getNonHeapUsage(fsn)%> </td>
         </tr>
         <tr>
           <th>Corrupt files</th>

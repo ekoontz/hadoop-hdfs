@@ -53,12 +53,36 @@
   <div class="report">
     <h3>Cluster Summary</h3>
     <div class="clustersummary">
-     <%= NamenodeJspHelper.getSecurityModeText()%>
-     <%= NamenodeJspHelper.getSafeModeText(fsn)%>
-     <%= NamenodeJspHelper.getInodeLimitText(fsn)%>
-     <%= NamenodeJspHelper.getWarningText(fsn)%>
+
+      <table>
+        <tr>
+          <th>Security</th>
+          <td> <%= NamenodeJspHelper.getSecurityModeText()%></td>
+        </tr>
+        <tr>
+          <th>Safe Mode</th>
+          <td> <%= NamenodeJspHelper.getSafeModeText(fsn)%> </td>
+        </tr>
+
+        <tr>
+          <th>Inode Limit</th>
+          <td> <%= NamenodeJspHelper.getInodeLimitText(fsn)%> </td>
+        </tr>
+
+        <tr>
+          <th>Corrupt files</th>
+          <td>
+            <a class="warning" href="/corrupt_files.jsp" title="List corrupt files">
+              <%= NamenodeJspHelper.getWarningText(fsn)%>
+            </a>
+          </td>
+        </tr>
+      </table>
+
     </div>
+
   </div>
+  
   <div class="report">
     <h3>Health</h3>
     <% healthjsp.generateHealthReport(out, nn, request); %>

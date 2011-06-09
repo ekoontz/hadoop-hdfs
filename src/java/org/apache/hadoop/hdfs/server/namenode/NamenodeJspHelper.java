@@ -57,20 +57,22 @@ import org.znerd.xmlenc.*;
 
 class NamenodeJspHelper {
   static String getSafeModeText(FSNamesystem fsn) {
-    if (!fsn.isInSafeMode())
-      return "";
-    return "<div>Safe mode is ON. <em>" + fsn.getSafeModeTip() + "</em></div>";
+    if (fsn.isInSafeMode()) {
+      return "ON: <em>" + fsn.getSafeModeTip() + "</em>";
+    }
+    else {
+      return "OFF";
+    }
   }
-  
   /**
    * returns security mode of the cluster (namenode)
    * @return "on" if security is on, and "off" otherwise
    */
   static String getSecurityModeText() {  
     if(UserGroupInformation.isSecurityEnabled()) {
-      return "<div>Security is <em>ON</em>.</div>";
+      return "ON";
     } else {
-      return "<div>Security is <em>OFF</em>.</div>";
+      return "OFF";
     }
   }
 

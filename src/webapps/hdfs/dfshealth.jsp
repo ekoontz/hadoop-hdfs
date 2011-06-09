@@ -52,28 +52,26 @@
 
   <div class="report">
     <h3>Cluster Summary</h3>
-    <div class="clustersummary">
+    <div class="dfstable stats">
 
       <table>
         <tr>
           <th>Security</th>
-          <td> <%= NamenodeJspHelper.getSecurityModeText()%></td>
+          <td> <%= NamenodeJspHelper.getSecurityModeText() %></td>
         </tr>
         <tr>
           <th>Safe Mode</th>
-          <td> <%= NamenodeJspHelper.getSafeModeText(fsn)%> </td>
+          <td> <%= NamenodeJspHelper.getSafeModeText(fsn) %> </td>
         </tr>
-
         <tr>
-          <th>Inode Limit</th>
+          <th>Capacity</th>
           <td> <%= NamenodeJspHelper.getInodeLimitText(fsn)%> </td>
         </tr>
-
         <tr>
           <th>Corrupt files</th>
           <td>
             <a class="warning" href="/corrupt_files.jsp" title="List corrupt files">
-              <%= NamenodeJspHelper.getWarningText(fsn)%>
+              <%= NamenodeJspHelper.getWarningText(fsn) %>
             </a>
           </td>
         </tr>

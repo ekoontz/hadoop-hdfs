@@ -91,38 +91,6 @@ class NamenodeJspHelper {
     return str;
   }
 
-  static String getHeapUsage(FSNamesystem fsn) {
-    MemoryMXBean mem = ManagementFactory.getMemoryMXBean();
-    MemoryUsage heap = mem.getHeapMemoryUsage();
-    long maxMemory = heap.getMax();
-    long committedMemory = heap.getCommitted();
-    long totalMemory = heap.getUsed();
-    long used = (totalMemory * 100) / committedMemory;
-
-    String str = "<div>Heap Memory used " + StringUtils.byteDesc(totalMemory) + " is "
-        + " " + used + "% of Committed Heap Memory "
-        + StringUtils.byteDesc(committedMemory)
-        + ".</div>"
-        + "<div>Max Heap Memory is " + StringUtils.byteDesc(maxMemory) +
-        ". </div>";
-    return str;
-  }
-
-  static String getNonHeapUsage(FSNamesystem fsn) {
-    MemoryMXBean mem = ManagementFactory.getMemoryMXBean();
-    MemoryUsage nonHeap = mem.getNonHeapMemoryUsage();
-    long totalNonHeap = nonHeap.getUsed();
-    long maxNonHeap = nonHeap.getMax();
-    long committedNonHeap = nonHeap.getCommitted();
-    long usedNonHeap = (totalNonHeap * 100) / committedNonHeap;
-
-    String str = "<div>Non Heap Memory used " + StringUtils.byteDesc(totalNonHeap) + " is"
-        + " " + usedNonHeap + "% of " + " Committed Non Heap Memory "
-        + StringUtils.byteDesc(committedNonHeap) + ".</div><div>Max Non Heap Memory is "
-        + StringUtils.byteDesc(maxNonHeap) + ".</div>";
-    return str;
-  }
-
   static String getUpgradeStatusText(FSNamesystem fsn) {
     String statusText = "";
     try {

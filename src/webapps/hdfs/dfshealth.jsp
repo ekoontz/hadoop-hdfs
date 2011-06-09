@@ -20,6 +20,9 @@
 <%@ page
   contentType="text/html; charset=UTF-8"
   import="org.apache.hadoop.util.ServletUtil"
+  import="java.lang.management.ManagementFactory"
+  import="java.lang.management.MemoryUsage"
+  import="org.apache.hadoop.util.StringUtils"
 %>
 <%!
   //for java.io.Serializable
@@ -31,6 +34,10 @@
   FSNamesystem fsn = nn.getNamesystem();
   String namenodeRole = nn.getRole().toString();
   String namenodeLabel = nn.getNameNodeAddress().getHostName() + ":" + nn.getNameNodeAddress().getPort();
+
+  MemoryUsage heapUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
+  MemoryUsage nonheapUsage = ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage();
+
 %>
 
 <html>
@@ -68,13 +75,46 @@
           <td> <%= NamenodeJspHelper.getInodeUsage(fsn)%> </td>
         </tr>
         <tr>
-          <th>Heap Usage</th>
-          <td> <%= NamenodeJspHelper.getHeapUsage(fsn)%> </td>
+          <th>Heap</th>
+          <td>
+            <table>
+              <tr>
+                <th>Used</th>
+                <td><%= StringUtils.byteDesc(heapUsage.getUsed()) %>
+              </tr>
+              <tr>
+                <th>Committed</th>
+                <td><%= StringUtils.byteDesc(heapUsage.getCommitted()) %>
+              </tr>
+              <tr>
+                <th>Max</th>
+                <td><%= StringUtils.byteDesc(heapUsage.getMax()) %>
+              </tr>
+            </table>
+          </td>
         </tr>
+
         <tr>
-          <th>NonHeap Usage</th>
-          <td> <%= NamenodeJspHelper.getNonHeapUsage(fsn)%> </td>
+          <th>NonHeap</th>
+          <td>
+            <table>
+              <tr>
+                <th>Used</th>
+                <td><%= StringUtils.byteDesc(nonheapUsage.getUsed()) %>
+              </tr>
+              <tr>
+                <th>Committed</th>
+                <td><%= StringUtils.byteDesc(nonheapUsage.getCommitted()) %>
+              </tr>
+              <tr>
+                <th>Max</th>
+                <td><%= StringUtils.byteDesc(nonheapUsage.getMax()) %>
+              </tr>
+            </table>
+          </td>
         </tr>
+
+
         <tr>
           <th>Corrupt files</th>
           <td>
